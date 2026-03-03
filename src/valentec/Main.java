@@ -20,7 +20,7 @@ public class Main extends Application {
         stage.setTitle("Welcome to CJ's Quiz!");
         stage.setScene(new Scene(root));
         stage.setMaximized(true);
-        stage.show();
+        stage.show(); //hello
     }
 }
 
