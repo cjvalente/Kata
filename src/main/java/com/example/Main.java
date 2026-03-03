@@ -1,4 +1,4 @@
-package valentec;
+package com.example;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +15,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("setUp.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/setUp.fxml"));
         Parent root = loader.load();
         stage.setTitle("Welcome to CJ's Quiz!");
         stage.setScene(new Scene(root));
@@ -23,4 +23,3 @@ public class Main extends Application {
         stage.show(); //hello
     }
 }
-

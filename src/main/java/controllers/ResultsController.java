@@ -1,4 +1,4 @@
-package valentec.controllers;
+package controllers;
 
 public class ResultsController {
 }

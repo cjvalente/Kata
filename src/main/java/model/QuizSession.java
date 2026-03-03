@@ -1,4 +1,4 @@
-package valentec.model;
+package model;
 
 public class QuizSession {
 }
