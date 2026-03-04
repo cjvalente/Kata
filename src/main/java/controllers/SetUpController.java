@@ -27,7 +27,6 @@ public class SetUpController {
     private static final int DEFAULT_NUM_QUESTIONS = 10;
     private static final int CATEGORY_ID_MIN = 9;
     private static final int CATEGORY_ID_MAX = 32;
-    QuizController quizController = new QuizController();
 
     @FXML
     private Spinner<Integer> numQuestionsSpinner;
@@ -124,14 +123,17 @@ public class SetUpController {
     }
 
     private void loadQuizScreen(Map<String, model.Question> questions) throws Exception {
-        quizController.setQuestions(questions);
+
         Stage stage = (Stage) startButton.getScene().getWindow();
 
         FXMLLoader loader = new FXMLLoader(
             getClass().getResource("/quiz.fxml")
         );
 
+
         Parent root = loader.load();
+        QuizController quizController = loader.getController();
+        quizController.setQuestions(questions);
 
         Scene newScene = new Scene(root, stage.getWidth(), stage.getHeight());
 

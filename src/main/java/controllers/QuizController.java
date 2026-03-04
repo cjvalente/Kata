@@ -28,26 +28,49 @@ public class QuizController {
 
     private Map<String, Question> questions;
     private List<Question> questionList;
-    private int currentQuestion = 1;
+    private int currentQuestionNum = 0;
     private int score = 0;
 
     public void setQuestions(Map<String, Question> questions) {
         this.questions = questions;
         this.questionList = new ArrayList<>(questions.values());
-        //loadQuestion();
+        loadQuestion();
+    }
+
+    private void loadQuestion() {
+        if (currentQuestionNum >= questionList.size()) {
+            return;
+        }
+        Question currentQuestion = questionList.get(currentQuestionNum);
+        questionLabel.setText(currentQuestion.getQuestionText());
+        setQuestionNumLabelText(currentQuestionNum + 1);
+        questionsVbox.getChildren().clear();
+
+        for (String answer : currentQuestion.getAllAnswers()) {
+            Button answerButton = new Button(answer);
+            answerButton.setMaxWidth(Double.MAX_VALUE);
+            answerButton.setPrefHeight(45);
+            answerButton.setOnAction(_ -> {
+                if (currentQuestion.isCorrect(answer)) {
+                    score++;
+                }
+            });
+            questionsVbox.getChildren().add(answerButton);
+        }
+        updateProgressBar();
     }
 
     @FXML
     private void nextButtonPressed() {
-        setQuestionNumLabelText(++currentQuestion);
-        updateProgressBar();
+        currentQuestionNum++;
+        loadQuestion();
 
     }
 
-    private void setQuestionNumLabelText(int currentQuestion) {
-        if (currentQuestion <= 10 ) { //switch 10 with questionList.size()
+    private void setQuestionNumLabelText(int currentQuestionNum) {
+        if (currentQuestionNum <= 10 ) { //switch 10 with questionList.size()
             StringBuilder sb = new StringBuilder();
-            sb.append("Question: ").append(currentQuestion);
+            sb.append("Question: ").append(currentQuestionNum);
             questionNumLabel.setText(sb.toString());
         }
     }

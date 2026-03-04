@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Question {
@@ -12,6 +13,7 @@ public class Question {
         this.questionText = questionText;
         this.correctAnswer = correctAnswer;
         this.allAnswers = allAnswers;
+        Collections.shuffle(this.allAnswers);
     }
 
     public String getQuestionText() {
@@ -29,4 +31,6 @@ public class Question {
     public boolean isCorrect(String selectedAnswer) {
         return correctAnswer.equals(selectedAnswer);
     }
+
+
 }
