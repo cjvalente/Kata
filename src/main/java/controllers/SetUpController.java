@@ -1,15 +1,23 @@
 package controllers;
 
+import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+import model.Question;
 import service.TriviaApiClient;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -19,6 +27,7 @@ public class SetUpController {
     private static final int DEFAULT_NUM_QUESTIONS = 10;
     private static final int CATEGORY_ID_MIN = 9;
     private static final int CATEGORY_ID_MAX = 32;
+    QuizController quizController = new QuizController();
 
     @FXML
     private Spinner<Integer> numQuestionsSpinner;
@@ -82,49 +91,26 @@ public class SetUpController {
                 }
             }
         }
-        if (selectedType.equals("multiple choice")) {
+        if (selectedType == null || selectedType.equals("Any")) {
+            selectedType = null;
+        } else if (selectedType.equals("multiple choice")) {
             selectedType = "multiple";
         } else if (selectedType.equals("true/false")) {
             selectedType = "boolean";
         }
+        if (selectedDifficulty == null || selectedDifficulty.equals("Any")) {
+            selectedDifficulty = null;
+        }
+
         try {
             String link = api.createLink(numQuestions, selectedCategoryId, selectedDifficulty, selectedType);
             System.out.println("API LINK: " + link);
             Map<String, model.Question> questions = api.loadQuestions(link);
-            for (model.Question question : questions.values()) {
-
-                System.out.println("\n----------------------------------");
-                System.out.println("Question:");
-                System.out.println(question.getQuestionText());
-                System.out.println("Answers:");
-                for (String answer : question.getAllAnswers()) {
-
-                    if (question.isCorrect(answer)) {
-                        System.out.println("  * " + answer + "  <-- CORRECT");
-                    } else {
-                        System.out.println("  - " + answer);
-                    }
-                }
-            }
+            loadQuizScreen(questions);
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Error load questions.");
+            showAlert("Error loading questions.");
         }
-//        if (selectedCategory == null) {
-//            selectedCategoryId = ThreadLocalRandom.current()
-//                .nextInt(CATEGORY_ID_MIN, CATEGORY_ID_MAX);
-//        }
-//        if (selectedType == null) {
-//            selectedType = "multiple choice";
-//        }
-//        if (selectedDifficulty == null) {
-//            selectedDifficulty = "medium";
-//        }
-//
-//        System.out.println("Questions: " + numQuestions);
-//        System.out.println("Category ID: " + selectedCategoryId);
-//        System.out.println("Difficulty: " + selectedDifficulty);
-//        System.out.println("Type: " + selectedType);
 
     }
 
@@ -135,5 +121,27 @@ public class SetUpController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void loadQuizScreen(Map<String, model.Question> questions) throws Exception {
+        quizController.setQuestions(questions);
+        Stage stage = (Stage) startButton.getScene().getWindow();
+
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource("/quiz.fxml")
+        );
+
+        Parent root = loader.load();
+
+        Scene newScene = new Scene(root, stage.getWidth(), stage.getHeight());
+
+        //newScene.getStylesheets().addAll(stage.getScene().getStylesheets());
+
+        stage.setScene(newScene);
+
+
+        stage.setMaximized(true);
+
+        stage.show();
     }
 }
