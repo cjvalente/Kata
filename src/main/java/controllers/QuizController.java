@@ -57,7 +57,7 @@ public class QuizController {
         double progressOfOneQuestion = (double) 1 / numTotalQuestions;
         double currentProgress = progressBar.getProgress();
         if (currentProgress < 1.0) {
-            progressBar.setProgress(currentProgress + progressOfOneQuestion);  //hello
+            progressBar.setProgress(currentProgress + progressOfOneQuestion);  //hello world
         }
 
     }
