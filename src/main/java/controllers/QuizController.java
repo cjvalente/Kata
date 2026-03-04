@@ -1,11 +1,18 @@
+/**
+ * Course: Kata for Direct Supply Software Engineering Intern
+ * Author: CJ Valente
+ * Purpose: This class controls all data flowing in and out of the quiz screen.
+ */
+
 package controllers;
 
-import javafx.event.ActionEvent;
+import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import model.Question;
 
 import java.util.ArrayList;
@@ -16,20 +23,21 @@ import java.util.Map;
 public class QuizController {
 
     @FXML
-    public Label questionNumLabel;
+    private Label questionNumLabel;
     @FXML
-    public Label questionLabel;
+    private Label questionLabel;
     @FXML
-    public VBox questionsVbox;
+    private VBox questionsVbox;
     @FXML
-    public Button nextButton;
+    private Button nextButton;
     @FXML
-    public ProgressBar progressBar;
+    private ProgressBar progressBar;
 
     private Map<String, Question> questions;
     private List<Question> questionList;
     private int currentQuestionNum = 0;
     private int score = 0;
+    private boolean questionAnswered = false;
 
     public void setQuestions(Map<String, Question> questions) {
         this.questions = questions;
@@ -38,6 +46,7 @@ public class QuizController {
     }
 
     private void loadQuestion() {
+        questionAnswered = false;
         if (currentQuestionNum >= questionList.size()) {
             return;
         }
@@ -50,39 +59,102 @@ public class QuizController {
             Button answerButton = new Button(answer);
             answerButton.setMaxWidth(Double.MAX_VALUE);
             answerButton.setPrefHeight(45);
-            answerButton.setOnAction(_ -> {
-                if (currentQuestion.isCorrect(answer)) {
-                    score++;
-                }
-            });
+            answerButton.setStyle(defaultButtonStyle());
+            answerButton.setOnAction(_ -> handleAnswerSelection(answerButton, answer, currentQuestion));
             questionsVbox.getChildren().add(answerButton);
         }
-        updateProgressBar();
     }
 
     @FXML
     private void nextButtonPressed() {
+        if (currentQuestionNum >= questionList.size()) {
+            System.out.println("Correct answers: " + score);
+        }
+        if (!questionAnswered || currentQuestionNum > questionList.size()){
+            return;
+        }
         currentQuestionNum++;
+        updateProgressBar();
         loadQuestion();
 
     }
 
     private void setQuestionNumLabelText(int currentQuestionNum) {
-        if (currentQuestionNum <= 10 ) { //switch 10 with questionList.size()
-            StringBuilder sb = new StringBuilder();
-            sb.append("Question: ").append(currentQuestionNum);
-            questionNumLabel.setText(sb.toString());
+        if (currentQuestionNum <= questionList.size()) {
+            questionNumLabel.setText("Question: " + currentQuestionNum);
         }
     }
 
     private void updateProgressBar() {
-        int numTotalQuestions = 10; //questionList.size();
+        int numTotalQuestions = questionList.size();
         double progressOfOneQuestion = (double) 1 / numTotalQuestions;
         double currentProgress = progressBar.getProgress();
         if (currentProgress < 1.0) {
-            progressBar.setProgress(currentProgress + progressOfOneQuestion);  //hello world
+            progressBar.setProgress(currentProgress + progressOfOneQuestion);
+        }
+    }
+
+    private void handleAnswerSelection(Button clickedButton, String selectedAnswer, Question question) {
+        if (questionAnswered) return;
+        questionAnswered = true;
+        boolean isCorrect = question.isCorrect(selectedAnswer);
+
+        if (isCorrect) {
+            score++;
+        }
+        for (var node : questionsVbox.getChildren()) {
+            node.setDisable(true);
+
+            if (node instanceof Button button) {
+
+                String buttonText = button.getText();
+
+                if (question.isCorrect(buttonText)) {
+                    button.setStyle(correctStyle());
+                    fadeIn(button);
+                } else if (button == clickedButton) {
+                    button.setStyle(incorrectStyle());
+                    fadeIn(button);
+                }
+            }
         }
 
+
+    }
+
+    private String defaultButtonStyle() {
+        return """
+                -fx-background-color: #004d40;
+                -fx-text-fill: white;
+                -fx-font-size: 15px;
+                -fx-background-radius: 8;
+                -fx-cursor: hand;
+                """;
+    }
+
+    private String correctStyle() {
+        return """
+                -fx-background-color: #2e7d32;
+                -fx-text-fill: white;
+                -fx-font-weight: bold;
+                -fx-background-radius: 8;
+                """;
+    }
+
+    private String incorrectStyle() {
+        return """
+                -fx-background-color: #c62828;
+                -fx-text-fill: white;
+                -fx-font-weight: bold;
+                -fx-background-radius: 8;
+                """;
+    }
+
+    private void fadeIn(Button button) {
+        FadeTransition ft = new FadeTransition(Duration.millis(400), button);
+        ft.setFromValue(0.4);
+        ft.setToValue(1.0);
+        ft.play();
     }
 
 

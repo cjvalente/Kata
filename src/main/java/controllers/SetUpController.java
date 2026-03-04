@@ -1,8 +1,7 @@
 package controllers;
 
-import javafx.animation.FadeTransition;
+
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,20 +12,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-import model.Question;
 import service.TriviaApiClient;
-
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class SetUpController {
     private static final int MIN_QUESTIONS = 1;
     private static final int MAX_QUESTIONS = 50;
     private static final int DEFAULT_NUM_QUESTIONS = 10;
-    private static final int CATEGORY_ID_MIN = 9;
-    private static final int CATEGORY_ID_MAX = 32;
 
     @FXML
     private Spinner<Integer> numQuestionsSpinner;
@@ -42,7 +34,7 @@ public class SetUpController {
     private Button startButton;
 
     private Map<Integer, String> categoryMap;
-    TriviaApiClient api = new TriviaApiClient();
+    private final TriviaApiClient api = new TriviaApiClient();
 
     public void initialize() {
         SpinnerValueFactory<Integer> valueFactory =

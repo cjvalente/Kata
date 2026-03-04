@@ -13,7 +13,7 @@ public class Question {
         this.questionText = questionText;
         this.correctAnswer = correctAnswer;
         this.allAnswers = allAnswers;
-        Collections.shuffle(this.allAnswers);
+        //Collections.shuffle(this.allAnswers);
     }
 
     public String getQuestionText() {

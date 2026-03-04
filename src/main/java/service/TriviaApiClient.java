@@ -76,11 +76,11 @@ public class TriviaApiClient {
 
     public Map<String, Question> loadQuestions(String link) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(link)).GET()
-            .build();
+                .uri(URI.create(link)).GET()
+                .build();
 
         HttpResponse<String> response = client.send(
-            request, HttpResponse.BodyHandlers.ofString());
+                request, HttpResponse.BodyHandlers.ofString());
 
         JsonObject root = JsonParser.parseString(response.body()).getAsJsonObject();
         JsonArray arr = root.getAsJsonArray("results");
