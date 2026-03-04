@@ -3,7 +3,11 @@ package controllers;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import service.TriviaApiClient;
 
 import java.util.Map;
@@ -59,18 +63,18 @@ public class SetUpController {
     public void setCategoryMap(Map<Integer, String> categoryMap) {
         this.categoryMap = categoryMap;
         categoryComboBox.setItems(
-            FXCollections.observableArrayList(categoryMap.values()) //set categories equal to values
+                FXCollections.observableArrayList(categoryMap.values())
         );
         categoryComboBox.setPromptText("Category");
     }
 
     @FXML
-    private void startButtonPressed(ActionEvent event) {
+    private void startButtonPressed() {
         int numQuestions = numQuestionsSpinner.getValue();
         String selectedCategory = categoryComboBox.getValue();
         String selectedDifficulty = difficultyComboBox.getValue();
         String selectedType = typeComboBox.getValue();
-        Integer selectedCategoryId = null;
+        Integer selectedCategoryId = 0;
         if (selectedCategory != null && !selectedCategory.equals("Any")) {  //edge case
             for (Map.Entry<Integer, String> entry : categoryMap.entrySet()) {
                 if (entry.getValue().equals(selectedCategory)) {
@@ -78,20 +82,50 @@ public class SetUpController {
                 }
             }
         }
-        if (selectedCategory == null) {
-            selectedCategoryId = ThreadLocalRandom.current().nextInt(CATEGORY_ID_MIN, CATEGORY_ID_MAX);
+        if (selectedType.equals("multiple choice")) {
+            selectedType = "multiple";
+        } else if (selectedType.equals("true/false")) {
+            selectedType = "boolean";
         }
-        if (selectedType == null) {
-            selectedType = "multiple choice";
-        }
-        if (selectedDifficulty == null) {
-            selectedDifficulty = "medium";
-        }
+        try {
+            String link = api.createLink(numQuestions, selectedCategoryId, selectedDifficulty, selectedType);
+            System.out.println("API LINK: " + link);
+            Map<String, model.Question> questions = api.loadQuestions(link);
+            for (model.Question question : questions.values()) {
 
-        System.out.println("Questions: " + numQuestions);
-        System.out.println("Category ID: " + selectedCategoryId);
-        System.out.println("Difficulty: " + selectedDifficulty);
-        System.out.println("Type: " + selectedType);  //WORKS!!!!!!!!!
+                System.out.println("\n----------------------------------");
+                System.out.println("Question:");
+                System.out.println(question.getQuestionText());
+                System.out.println("Answers:");
+                for (String answer : question.getAllAnswers()) {
+
+                    if (question.isCorrect(answer)) {
+                        System.out.println("  * " + answer + "  <-- CORRECT");
+                    } else {
+                        System.out.println("  - " + answer);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error load questions.");
+        }
+//        if (selectedCategory == null) {
+//            selectedCategoryId = ThreadLocalRandom.current()
+//                .nextInt(CATEGORY_ID_MIN, CATEGORY_ID_MAX);
+//        }
+//        if (selectedType == null) {
+//            selectedType = "multiple choice";
+//        }
+//        if (selectedDifficulty == null) {
+//            selectedDifficulty = "medium";
+//        }
+//
+//        System.out.println("Questions: " + numQuestions);
+//        System.out.println("Category ID: " + selectedCategoryId);
+//        System.out.println("Difficulty: " + selectedDifficulty);
+//        System.out.println("Type: " + selectedType);
+
     }
 
 
