@@ -29,7 +29,8 @@
              text="Question: 1"
              style="-fx-text-fill: white; -fx-font-size: 18px;" />
 
-      <ProgressBar progress="0.0"
+      <ProgressBar fx:id="progressBar"
+                   progress="0.0"
                    prefWidth="500"
                    style="-fx-accent: #004d40;" />
     </VBox>
@@ -62,6 +63,7 @@
 
       <Button fx:id="nextButton"
               text="Next"
+              onAction="#nextButtonPressed"
               prefWidth="200"
               prefHeight="50"
               style="
