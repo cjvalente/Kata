@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import javafx.scene.control.Alert;
 import model.Question;
 
 import java.net.URI;
@@ -24,6 +25,7 @@ public class TriviaApiClient {
 
     private final HttpClient client;
     private Map<Integer, String> categoryMap;
+    private int responseCode = 0;
 
     public TriviaApiClient() {
         this.client = HttpClient.newHttpClient();
@@ -76,16 +78,64 @@ public class TriviaApiClient {
     }
 
     public Map<String, Question> loadQuestions(String link) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
+        Map<String, Question> questionMap = new LinkedHashMap<>();
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(link)).GET()
                 .build();
 
-        HttpResponse<String> response = client.send(
+            HttpResponse<String> response = client.send(
                 request, HttpResponse.BodyHandlers.ofString());
 
-        JsonObject root = JsonParser.parseString(response.body()).getAsJsonObject();
-        JsonArray arr = root.getAsJsonArray("results");
+            JsonObject root = JsonParser.parseString(response.body()).getAsJsonObject();
+            responseCode = Integer.parseInt(root.get("response_code").getAsString());
+            switch (responseCode) {
+                case 0:
+                    return parseQuestions(root);
+                case 1:
+                    showAlert("API Error: No results for this query.");
+                    return questionMap;
+
+                case 2:
+                    showAlert("API Error: Invalid parameters used.");
+                    return questionMap;
+
+                case 3:
+                    showAlert("API Error: Session token not found.");
+                    return questionMap;
+
+                case 4:
+                    showAlert("API Error: Token empty (all questions used).");
+                    return questionMap;
+
+                case 5:
+                    showAlert("API Error: Rate limit exceeded. Waiting 5 seconds...");
+                    Thread.sleep(5000);
+                    return loadQuestions(link);
+
+                default:
+                    showAlert("API Error: Unknown response code: " + responseCode);
+            }
+        } catch (java.net.http.HttpTimeoutException e) {
+            showAlert("Network timeout while contacting trivia API");
+        } catch (java.net.ConnectException e) {
+            showAlert("Unable to connect to trivia API");
+        } catch (InterruptedException e) {
+            showAlert("Thread interrupted while waiting for API");
+            Thread.currentThread().interrupt();
+        } catch (Exception e) {
+            System.err.println("Unexpected error while loading questions.");
+        }
+        return questionMap;
+
+
+
+    }
+
+    private Map<String, Question> parseQuestions(JsonObject root) {
         Map<String, Question> questionMap = new LinkedHashMap<>();
+        JsonArray arr = root.getAsJsonArray("results");
+
 
         for (JsonElement e : arr) {
             JsonObject obj = e.getAsJsonObject();
@@ -98,7 +148,7 @@ public class TriviaApiClient {
 
             answers.add(correctAnswer);
 
-            for (JsonElement wrong : incorrectArray){
+            for (JsonElement wrong : incorrectArray) {
                 answers.add(decodeHtml(wrong.getAsString()));
             }
 
@@ -110,13 +160,23 @@ public class TriviaApiClient {
 
         }
         return questionMap;
+    }
 
-
-
+    public int getResponseCode() {
+        return responseCode;
     }
 
     private String decodeHtml(String text) {
         return StringEscapeUtils.unescapeHtml4(text);
+    }
+
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
 

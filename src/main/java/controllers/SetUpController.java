@@ -115,27 +115,28 @@ public class SetUpController {
     }
 
     private void loadQuizScreen(Map<String, model.Question> questions) throws Exception {
+        if (api.getResponseCode() == 0) {
+            Stage stage = (Stage) startButton.getScene().getWindow();
 
-        Stage stage = (Stage) startButton.getScene().getWindow();
-
-        FXMLLoader loader = new FXMLLoader(
-            getClass().getResource("/quiz.fxml")
-        );
-
-
-        Parent root = loader.load();
-        QuizController quizController = loader.getController();
-        quizController.setQuestions(questions);
-
-        Scene newScene = new Scene(root, stage.getWidth(), stage.getHeight());
-
-        //newScene.getStylesheets().addAll(stage.getScene().getStylesheets());
-
-        stage.setScene(newScene);
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/quiz.fxml")
+            );
 
 
-        stage.setMaximized(true);
+            Parent root = loader.load();
+            QuizController quizController = loader.getController();
+            quizController.setQuestions(questions);
 
-        stage.show();
+            Scene newScene = new Scene(root, stage.getWidth(), stage.getHeight());
+
+            //newScene.getStylesheets().addAll(stage.getScene().getStylesheets());
+
+            stage.setScene(newScene);
+
+
+            stage.setMaximized(true);
+
+            stage.show();
+        }
     }
 }
