@@ -8,13 +8,19 @@ package controllers;
 
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Question;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -73,8 +79,12 @@ public class QuizController {
             return;
         }
         currentQuestionNum++;
-        updateProgressBar();
-        loadQuestion();
+        if (currentQuestionNum == questionList.size()) {
+            loadResultsScreen(score);
+        } else {
+            updateProgressBar();
+            loadQuestion();
+        }
 
     }
 
@@ -156,6 +166,38 @@ public class QuizController {
         ft.setFromValue(0.4);
         ft.setToValue(1.0);
         ft.play();
+    }
+
+    private void loadResultsScreen(int score) {
+        Stage stage = (Stage) nextButton.getScene().getWindow();
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/results.fxml")
+        );
+        try {
+            Parent root = loader.load();
+            ResultsController resultsController = loader.getController();
+            resultsController.setScore(score, questionList.size());
+
+            Scene newScene = new Scene(root, stage.getWidth(), stage.getHeight());
+
+            stage.setScene(newScene);
+
+
+            stage.setMaximized(true);
+
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Load Exception: " + e.getMessage());
+        }
+    }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
 

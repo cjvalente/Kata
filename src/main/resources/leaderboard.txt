@@ -1,0 +1,10 @@
+1 CJ 10/10
+2 Isaac 9/10
+3 John 8/10
+4 Carl 7/10
+5 Chad 6/10
+6 Nathan 5/10
+7 Jude 4/10
+8 Ethan 3/10
+9 Brock 2/10
+10 Jimmy 1/10
