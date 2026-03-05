@@ -33,6 +33,7 @@ public class QuizController {
     @FXML
     private ProgressBar progressBar;
 
+
     private Map<String, Question> questions;
     private List<Question> questionList;
     private int currentQuestionNum = 0;
@@ -67,9 +68,6 @@ public class QuizController {
 
     @FXML
     private void nextButtonPressed() {
-        if (currentQuestionNum >= questionList.size()) {
-            System.out.println("Correct answers: " + score);
-        }
         if (!questionAnswered || currentQuestionNum > questionList.size()){
             return;
         }
@@ -81,7 +79,7 @@ public class QuizController {
 
     private void setQuestionNumLabelText(int currentQuestionNum) {
         if (currentQuestionNum <= questionList.size()) {
-            questionNumLabel.setText("Question: " + currentQuestionNum);
+            questionNumLabel.setText("Question: " + currentQuestionNum + "/" + questionList.size());
         }
     }
 
@@ -124,7 +122,7 @@ public class QuizController {
 
     private String defaultButtonStyle() {
         return """
-                -fx-background-color: #004d40;
+                -fx-background-color: #2366C0;
                 -fx-text-fill: white;
                 -fx-font-size: 15px;
                 -fx-background-radius: 8;

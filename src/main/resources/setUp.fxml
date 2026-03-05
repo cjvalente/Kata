@@ -9,66 +9,112 @@
   xmlns="http://javafx.com/javafx/23.0.1"
   xmlns:fx="http://javafx.com/fxml/1"
   fx:controller="controllers.SetUpController"
-  prefWidth="700"
-  prefHeight="500"
-  style="-fx-background-color: linear-gradient(to bottom right, #1f4037, #99f2c8);"
+  prefWidth="900"
+  prefHeight="650"
+  style="-fx-background-color: linear-gradient(to right, #031632, #1f3f73, #3373D4);"
 >
 
   <!-- Center Card -->
-  <VBox spacing="20" alignment="CENTER" maxWidth="380"
-        style="-fx-background-color: white;
-                 -fx-background-radius: 20;
-                 -fx-padding: 30;
-                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 20, 0.3, 0, 5);">
+  <VBox spacing="28"
+        alignment="CENTER"
+        maxWidth="480"
+        style="
+            -fx-background-color: rgba(255,255,255,0.08);
+            -fx-background-radius: 22;
+            -fx-padding: 45;
+            -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 30, 0.3, 0, 10);
+          ">
 
     <!-- Title -->
-    <Label text="CJ's Quiz App">
+    <Label text="CJ's Quiz">
       <font>
-        <Font size="32"/>
+        <Font size="36"/>
       </font>
+      <style>
+        -fx-text-fill: white;
+        -fx-font-weight: 700;
+      </style>
     </Label>
 
-    <Label text="Customize your quiz"
-           style="-fx-text-fill: #666666; -fx-font-size: 14px;" />
+    <!-- Subtitle -->
+    <Label text="Customize your quiz experience"
+           style="
+                 -fx-text-fill: rgba(255,255,255,0.7);
+                 -fx-font-size: 16px;
+               "/>
 
-    <Separator />
+    <Separator style="-fx-opacity: 0.2;" />
 
     <!-- Number of Questions -->
-    <VBox spacing="5" alignment="CENTER_LEFT">
-      <Label text="Number of Questions"/>
-      <Spinner fx:id="numQuestionsSpinner" prefWidth="320" editable="true"/>
+    <VBox spacing="6" alignment="CENTER_LEFT" maxWidth="360">
+      <Label text="Number of Questions"
+             style="-fx-text-fill: white; -fx-font-size: 14px;" />
+
+      <Spinner fx:id="numQuestionsSpinner"
+               editable="true"
+               prefWidth="360"
+               style="
+                        -fx-background-radius: 10;
+                        -fx-font-size: 14px;
+                     "/>
     </VBox>
 
     <!-- Category -->
-    <VBox spacing="5" alignment="CENTER_LEFT">
-      <Label text="Category"/>
-      <ComboBox fx:id="categoryComboBox" prefWidth="320"/>
+    <VBox spacing="6" alignment="CENTER_LEFT" maxWidth="360">
+      <Label text="Category"
+             style="-fx-text-fill: white; -fx-font-size: 14px;" />
+
+      <ComboBox fx:id="categoryComboBox"
+                prefWidth="360"
+                style="
+                        -fx-background-radius: 10;
+                        -fx-font-size: 14px;
+                      "/>
     </VBox>
 
     <!-- Difficulty -->
-    <VBox spacing="5" alignment="CENTER_LEFT">
-      <Label text="Difficulty"/>
-      <ComboBox fx:id="difficultyComboBox" prefWidth="320"/>
+    <VBox spacing="6" alignment="CENTER_LEFT" maxWidth="360">
+      <Label text="Difficulty"
+             style="-fx-text-fill: white; -fx-font-size: 14px;" />
+
+      <ComboBox fx:id="difficultyComboBox"
+                prefWidth="360"
+                style="
+                        -fx-background-radius: 10;
+                        -fx-font-size: 14px;
+                      "/>
     </VBox>
 
     <!-- Type -->
-    <VBox spacing="5" alignment="CENTER_LEFT">
-      <Label text="Question Type"/>
-      <ComboBox fx:id="typeComboBox" prefWidth="320"/>
+    <VBox spacing="6" alignment="CENTER_LEFT" maxWidth="360">
+      <Label text="Question Type"
+             style="-fx-text-fill: white; -fx-font-size: 14px;" />
+
+      <ComboBox fx:id="typeComboBox"
+                prefWidth="360"
+                style="
+                        -fx-background-radius: 10;
+                        -fx-font-size: 14px;
+                      "/>
     </VBox>
+
+    <!-- Spacer -->
+    <Region prefHeight="5"/>
 
     <!-- Start Button -->
     <Button
       fx:id="startButton"
       text="Start Quiz"
       onAction="#startButtonPressed"
-      prefWidth="320"
+      prefWidth="360"
+      prefHeight="48"
       style="
-                -fx-background-color: #1f4037;
+                -fx-background-color: #2366C0;
                 -fx-text-fill: white;
-                -fx-font-size: 14px;
-                -fx-background-radius: 10;
-                -fx-padding: 10 0 10 0;
+                -fx-font-size: 16px;
+                -fx-font-weight: 600;
+                -fx-background-radius: 12;
+                -fx-cursor: hand;
             "
     />
 
