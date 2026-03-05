@@ -64,6 +64,7 @@ public class QuizController {
             answerButton.setOnAction(_ -> handleAnswerSelection(answerButton, answer, currentQuestion));
             questionsVbox.getChildren().add(answerButton);
         }
+
     }
 
     @FXML
@@ -93,7 +94,9 @@ public class QuizController {
     }
 
     private void handleAnswerSelection(Button clickedButton, String selectedAnswer, Question question) {
-        if (questionAnswered) return;
+        if (questionAnswered) {
+            return;
+        }
         questionAnswered = true;
         boolean isCorrect = question.isCorrect(selectedAnswer);
 

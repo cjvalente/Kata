@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class TriviaApiClient {
     private static final String CATEGORY_URL = "https://opentdb.com/api_category.php";
@@ -115,14 +116,7 @@ public class TriviaApiClient {
     }
 
     private String decodeHtml(String text) {
-        return text.replace("&quot;", "\"")
-            .replace("&#039;", "'")
-            .replace("&amp;", "&")
-            .replace("&eacute;", "é")
-            .replace("&uuml;", "ü")
-            .replace("&rsquo;", "'")
-            .replace("&ldquo;", "\"")
-            .replace("&rdquo;", "\"");
+        return StringEscapeUtils.unescapeHtml4(text);
     }
 
 
