@@ -6,7 +6,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.stage.Stage;
 import model.QuizSession;
 import service.TriviaApiClient;
@@ -38,7 +43,7 @@ public class SetUpController {
     private final TriviaApiClient api = new TriviaApiClient();
 
     public void initialize() {
-        welcomeLabel.setText("Welcome " + QuizSession.name + "!");
+        welcomeLabel.setText("Welcome " + QuizSession.getName() + "!");
         SpinnerValueFactory<Integer> valueFactory =
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(
                         MIN_QUESTIONS, MAX_QUESTIONS, DEFAULT_NUM_QUESTIONS);

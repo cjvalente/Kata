@@ -8,23 +8,21 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import model.LeadboardEntry;
+import model.LeaderboardEntry;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ResultsController {
     @FXML
-    private TableView<LeadboardEntry> leaderboardTable;
+    private TableView<LeaderboardEntry> leaderboardTable;
     @FXML
-    private TableColumn<LeadboardEntry, Integer> rankColumn;
+    private TableColumn<LeaderboardEntry, Integer> rankColumn;
     @FXML
-    private TableColumn<LeadboardEntry, String> nameColumn;
+    private TableColumn<LeaderboardEntry, String> nameColumn;
     @FXML
-    private TableColumn<LeadboardEntry, String> scoreColumn;
+    private TableColumn<LeaderboardEntry, String> scoreColumn;
 
     private int score;
     private int totalQuestions;
@@ -34,7 +32,7 @@ public class ResultsController {
     @FXML
     private Button playAgainButton;
 
-    private final ObservableList<LeadboardEntry> leadboardData = FXCollections.observableArrayList();
+    private final ObservableList<LeaderboardEntry> leadboardData = FXCollections.observableArrayList();
 
     public void initialize() {
         rankColumn.setCellValueFactory(cellData -> cellData.getValue().rankProperty().asObject());
@@ -56,7 +54,7 @@ public class ResultsController {
                     int rank = Integer.parseInt(parts[0]);
                     String playerName = parts[1];
                     String playerScore = parts[2];
-                    leadboardData.add(new LeadboardEntry(rank, playerName, playerScore));
+                    leadboardData.add(new LeaderboardEntry(rank, playerName, playerScore));
                 }
             }
         } catch (IOException e) {

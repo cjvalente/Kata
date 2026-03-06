@@ -25,8 +25,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * Controller responsible for managing the quiz gameplay screen
+ *This class handles:
+ *      Displaying questions and answer choices
+ *      Handling user answer selection
+ *      Tracking quiz progress and score
+ *      Updating progress bar
+ *      Applying visual feedback for correct/incorrect answers
+ *      Transitioning to the results screen when quiz is done
+ * The controller receives quiz data and dynamically generates
+ * answer buttons for each question.
+ */
 public class QuizController {
+    private static final int ANSWER_BUTTON_HEIGHT = 45;
+    private static final int FADE_TRANSITION_MILLIS = 400;
+    private static final double FADE_FROM_VALUE = 0.4;
 
     @FXML
     private Label questionNumLabel;
@@ -40,55 +54,75 @@ public class QuizController {
     private ProgressBar progressBar;
 
 
-    private Map<String, Question> questions;
     private List<Question> questionList;
     private int currentQuestionNum = 0;
     private int score = 0;
     private boolean questionAnswered = false;
-    private String name;
 
+    /**
+     * Receives the quiz questions and initializes the quiz
+     * @param questions map containing question text mapped to Question object
+     */
     public void setQuestions(Map<String, Question> questions) {
-        this.questions = questions;
         this.questionList = new ArrayList<>(questions.values());
         loadQuestion();
     }
 
+    /**
+     * Loads the current question and dynamically generates answer buttons.
+     */
     private void loadQuestion() {
         questionAnswered = false;
-        if (currentQuestionNum >= questionList.size()) {
-            return;
-        }
-        Question currentQuestion = questionList.get(currentQuestionNum);
-        questionLabel.setText(currentQuestion.getQuestionText());
-        setQuestionNumLabelText(currentQuestionNum + 1);
-        questionsVbox.getChildren().clear();
+        if (currentQuestionNum < questionList.size()) {
 
-        for (String answer : currentQuestion.getAllAnswers()) {
-            Button answerButton = new Button(answer);
-            answerButton.setMaxWidth(Double.MAX_VALUE);
-            answerButton.setPrefHeight(45);
-            answerButton.setStyle(defaultButtonStyle());
-            answerButton.setOnAction(_ -> handleAnswerSelection(answerButton, answer, currentQuestion));
-            questionsVbox.getChildren().add(answerButton);
+            //grab question we are on and set text
+            Question currentQuestion = questionList.get(currentQuestionNum);
+            questionLabel.setText(currentQuestion.getQuestionText());
+
+            //update current question label
+            setQuestionNumLabelText(currentQuestionNum + 1);
+
+            //clear main vbox on screen that holds answer buttons.
+            questionsVbox.getChildren().clear();
+
+            //Fill the vbox with answer buttons based on how many possible answers there are.
+            for (String answer : currentQuestion.getAllAnswers()) {
+                Button answerButton = new Button(answer);
+                answerButton.setMaxWidth(Double.MAX_VALUE);
+                answerButton.setPrefHeight(ANSWER_BUTTON_HEIGHT);
+                answerButton.setStyle(defaultButtonStyle());
+                answerButton.setOnAction(
+                        _ -> handleAnswerSelection(answerButton, answer, currentQuestion)
+                );
+                questionsVbox.getChildren().add(answerButton);
+            }
         }
 
     }
 
+    /**
+     * Handles what happens when next button is pressed
+     * If the current question has been answered, the quiz advances to the
+     * next question or loads final result screen.
+     */
     @FXML
     private void nextButtonPressed() {
-        if (!questionAnswered || currentQuestionNum > questionList.size()){
-            return;
+        if (questionAnswered && currentQuestionNum < questionList.size()) {
+            currentQuestionNum++;
+            if (currentQuestionNum == questionList.size()) {
+                loadResultsScreen(score);
+            } else {
+                updateProgressBar();
+                loadQuestion();
+            }
+            questionAnswered = false;
         }
-        currentQuestionNum++;
-        if (currentQuestionNum == questionList.size()) {
-            loadResultsScreen(score);
-        } else {
-            updateProgressBar();
-            loadQuestion();
-        }
-
     }
 
+    /**
+     * Updates the question number label
+     * @param currentQuestionNum the question number currently being displayed
+     */
     private void setQuestionNumLabelText(int currentQuestionNum) {
         if (currentQuestionNum <= questionList.size()) {
             questionNumLabel.setText("Question: " + currentQuestionNum + "/" + questionList.size());
@@ -104,13 +138,23 @@ public class QuizController {
         }
     }
 
-    private void handleAnswerSelection(Button clickedButton, String selectedAnswer, Question question) {
-        if (questionAnswered) {
-            return;
-        }
+    /**
+     * Handles logic when a user selects an answer
+     * This method:
+     *      Determines whether the selected answer is correct
+     *      Updates the score if it is.
+     *      Disables all answer buttons
+     *      Applies immediate visual feedback.
+     * @param clickedButton the button the user clicked
+     * @param selectedAnswer the selected answer text
+     * @param question the current quiz question
+     */
+    private void handleAnswerSelection(
+              Button clickedButton, String selectedAnswer, Question question) {
+
+
         questionAnswered = true;
         boolean isCorrect = question.isCorrect(selectedAnswer);
-
         if (isCorrect) {
             score++;
         }
@@ -128,13 +172,15 @@ public class QuizController {
                     button.setStyle(incorrectStyle());
                     fadeIn(button);
                 }
+
             }
         }
-
-
     }
 
-
+    /**
+     * Loads the results screen once the quiz is finished
+     * @param score the user's final quiz score.
+     */
     private void loadResultsScreen(int score) {
         Stage stage = (Stage) nextButton.getScene().getWindow();
 
@@ -158,6 +204,10 @@ public class QuizController {
         }
     }
 
+    /**
+     * White text, blue background
+     * @return CSS string
+     */
     private String defaultButtonStyle() {
         return """
                 -fx-background-color: #2366C0;
@@ -168,6 +218,10 @@ public class QuizController {
                 """;
     }
 
+    /**
+     * White text, green background
+     * @return CSS String
+     */
     private String correctStyle() {
         return """
                 -fx-background-color: #2e7d32;
@@ -177,6 +231,10 @@ public class QuizController {
                 """;
     }
 
+    /**
+     * White text, red background
+     * @return CSS String
+     */
     private String incorrectStyle() {
         return """
                 -fx-background-color: #c62828;
@@ -186,9 +244,15 @@ public class QuizController {
                 """;
     }
 
+    /**
+     * Method that handles the fade in of the correct answer button and if they are different,
+     * the chosen answer button as well.
+     * @param button the button we are fading in. Either just the
+     * correct button or the correct+incorrect chosen button.
+     */
     private void fadeIn(Button button) {
-        FadeTransition ft = new FadeTransition(Duration.millis(400), button);
-        ft.setFromValue(0.4);
+        FadeTransition ft = new FadeTransition(Duration.millis(FADE_TRANSITION_MILLIS), button);
+        ft.setFromValue(FADE_FROM_VALUE);
         ft.setToValue(1.0);
         ft.play();
     }
