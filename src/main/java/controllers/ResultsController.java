@@ -21,6 +21,8 @@ import model.LeaderboardEntry;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Objects;
 
 /**
  * Controller responsible for managing the Results screen
@@ -80,7 +82,9 @@ public class ResultsController {
     private void loadLeaderboardFromFile() {
         leaderboardData.clear();
         String filepath = "src/main/resources/leaderboard.txt";
-        try (BufferedReader reader = new BufferedReader(new FileReader(filepath))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                Objects.requireNonNull(getClass().getResourceAsStream("/leaderboard.txt"))
+        ))) {
             String line;
             while ((line = reader.readLine()) != null) {
 
