@@ -6,12 +6,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
+import model.QuizSession;
 import service.TriviaApiClient;
 import java.util.Map;
 
@@ -19,6 +16,7 @@ public class SetUpController {
     private static final int MIN_QUESTIONS = 1;
     private static final int MAX_QUESTIONS = 50;
     private static final int DEFAULT_NUM_QUESTIONS = 10;
+    private String name;
 
     @FXML
     private Spinner<Integer> numQuestionsSpinner;
@@ -31,12 +29,16 @@ public class SetUpController {
     private ComboBox<String> typeComboBox;
 
     @FXML
+    private Label welcomeLabel;
+
+    @FXML
     private Button startButton;
 
     private Map<Integer, String> categoryMap;
     private final TriviaApiClient api = new TriviaApiClient();
 
     public void initialize() {
+        welcomeLabel.setText("Welcome " + QuizSession.name + "!");
         SpinnerValueFactory<Integer> valueFactory =
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(
                         MIN_QUESTIONS, MAX_QUESTIONS, DEFAULT_NUM_QUESTIONS);
@@ -99,7 +101,6 @@ public class SetUpController {
             Map<String, model.Question> questions = api.loadQuestions(link);
             loadQuizScreen(questions);
         } catch (Exception e) {
-            e.printStackTrace();
             showAlert("Error loading questions.");
         }
 

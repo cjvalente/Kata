@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.WelcomeScreenController"
+            style="-fx-background-color: linear-gradient(to right, #0a1f44, #1c3e73, #3373D4);">
+
+  <children>
+
+    <VBox alignment="CENTER" spacing="40"
+          AnchorPane.leftAnchor="60"
+          AnchorPane.rightAnchor="60"
+          AnchorPane.topAnchor="60"
+          AnchorPane.bottomAnchor="60">
+
+      <!-- APP TITLE -->
+
+      <Label text="KataQuiz!"
+             style="
+                    -fx-text-fill: white;
+                    -fx-font-size: 48px;
+                    -fx-font-weight: bold;
+                    -fx-letter-spacing: 1.5px;
+                   "/>
+
+      <Label text="Test your knowledge"
+             style="
+                    -fx-text-fill: rgba(255,255,255,0.75);
+                    -fx-font-size: 18px;
+                   "/>
+
+
+      <!-- NAME INPUT CARD -->
+
+      <VBox alignment="CENTER"
+            spacing="20"
+            maxWidth="420"
+            style="
+                    -fx-background-color: rgba(255,255,255,0.10);
+                    -fx-background-radius: 26;
+                    -fx-padding: 40;
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 40, 0.25, 0, 12);
+                  ">
+
+        <Label text="Enter your name"
+               style="
+                        -fx-text-fill: white;
+                        -fx-font-size: 20px;
+                        -fx-font-weight: bold;
+                     "/>
+
+        <TextField fx:id="nameField"
+                   promptText="Player name"
+                   maxWidth="260"
+                   prefHeight="42"
+                   style="
+                        -fx-background-radius: 12;
+                        -fx-background-color: rgba(255,255,255,0.9);
+                        -fx-font-size: 16px;
+                        -fx-padding: 8 12 8 12;
+                   "/>
+
+        <Button text="Start Quiz"
+                fx:id="startButton"
+                prefWidth="200"
+                prefHeight="50"
+                onAction="#startQuiz"
+                style="
+                        -fx-background-color: #2d7ef7;
+                        -fx-text-fill: white;
+                        -fx-font-size: 18px;
+                        -fx-font-weight: 600;
+                        -fx-background-radius: 14;
+                        -fx-cursor: hand;
+                   "/>
+
+      </VBox>
+
+      <Region/>
+
+    </VBox>
+
+  </children>
+
+</AnchorPane>

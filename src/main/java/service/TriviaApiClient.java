@@ -22,10 +22,11 @@ import org.apache.commons.text.StringEscapeUtils;
 public class TriviaApiClient {
     private static final String CATEGORY_URL = "https://opentdb.com/api_category.php";
     private static final String BASE_URL = "https://opentdb.com/api.php?";
-
+    private static final int FIVE_SECONDS = 5000;
     private final HttpClient client;
     private Map<Integer, String> categoryMap;
     private int responseCode = 0;
+
 
     public TriviaApiClient() {
         this.client = HttpClient.newHttpClient();
@@ -81,40 +82,29 @@ public class TriviaApiClient {
         Map<String, Question> questionMap = new LinkedHashMap<>();
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(link)).GET()
-                .build();
+                    .uri(URI.create(link)).GET()
+                    .build();
 
             HttpResponse<String> response = client.send(
-                request, HttpResponse.BodyHandlers.ofString());
+                    request, HttpResponse.BodyHandlers.ofString());
 
             JsonObject root = JsonParser.parseString(response.body()).getAsJsonObject();
             responseCode = Integer.parseInt(root.get("response_code").getAsString());
             switch (responseCode) {
-                case 0:
+                case 0 -> {
                     return parseQuestions(root);
-                case 1:
-                    showAlert("API Error: No results for this query.");
-                    return questionMap;
-
-                case 2:
-                    showAlert("API Error: Invalid parameters used.");
-                    return questionMap;
-
-                case 3:
-                    showAlert("API Error: Session token not found.");
-                    return questionMap;
-
-                case 4:
-                    showAlert("API Error: Token empty (all questions used).");
-                    return questionMap;
-
-                case 5:
+                }
+                case 1 -> showAlert("API Error: No results for this query.");
+                case 2 -> showAlert("API Error: Invalid parameters used.");
+                case 3 -> showAlert("API Error: Session token not found.");
+                case 4 -> showAlert("API Error: Token empty (all questions used).");
+                case 5 -> {
                     showAlert("API Error: Rate limit exceeded. Waiting 5 seconds...");
-                    Thread.sleep(5000);
-                    return loadQuestions(link);
 
-                default:
-                    showAlert("API Error: Unknown response code: " + responseCode);
+                    Thread.sleep(FIVE_SECONDS);
+                    return loadQuestions(link);
+                }
+                default -> showAlert("API Error: Unknown response code: " + responseCode);
             }
         } catch (java.net.http.HttpTimeoutException e) {
             showAlert("Network timeout while contacting trivia API");

@@ -45,6 +45,7 @@ public class QuizController {
     private int currentQuestionNum = 0;
     private int score = 0;
     private boolean questionAnswered = false;
+    private String name;
 
     public void setQuestions(Map<String, Question> questions) {
         this.questions = questions;
@@ -133,6 +134,30 @@ public class QuizController {
 
     }
 
+
+    private void loadResultsScreen(int score) {
+        Stage stage = (Stage) nextButton.getScene().getWindow();
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/results.fxml")
+        );
+        try {
+            Parent root = loader.load();
+            ResultsController resultsController = loader.getController();
+            resultsController.setScore(score, questionList.size());
+            Scene newScene = new Scene(root, stage.getWidth(), stage.getHeight());
+
+            stage.setScene(newScene);
+
+
+            stage.setMaximized(true);
+
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Load Exception: " + e.getMessage());
+        }
+    }
+
     private String defaultButtonStyle() {
         return """
                 -fx-background-color: #2366C0;
@@ -168,29 +193,6 @@ public class QuizController {
         ft.play();
     }
 
-    private void loadResultsScreen(int score) {
-        Stage stage = (Stage) nextButton.getScene().getWindow();
-
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/results.fxml")
-        );
-        try {
-            Parent root = loader.load();
-            ResultsController resultsController = loader.getController();
-            resultsController.setScore(score, questionList.size());
-
-            Scene newScene = new Scene(root, stage.getWidth(), stage.getHeight());
-
-            stage.setScene(newScene);
-
-
-            stage.setMaximized(true);
-
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Load Exception: " + e.getMessage());
-        }
-    }
 
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

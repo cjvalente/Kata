@@ -26,7 +26,7 @@
           ">
 
     <!-- Title -->
-    <Label text="CJ's Quiz">
+    <Label text="Welcome " fx:id="welcomeLabel">
       <font>
         <Font size="36"/>
       </font>

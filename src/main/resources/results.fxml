@@ -114,6 +114,7 @@
       <Region/>
 
       <Button fx:id="playAgainButton"
+              onAction="#playAgain"
               text="Play Again"
               prefWidth="220"
               prefHeight="56"
