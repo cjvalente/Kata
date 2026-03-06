@@ -35,6 +35,14 @@ public class WelcomeScreenController {
     private TextField nameField;
 
     /**
+     * initialize so that enter key binds to the start button
+     */
+    public void initialize() {
+        // When the user presses Enter in the text field, startQuiz() runs
+        nameField.setOnAction(_ -> startQuiz());
+    }
+
+    /**
      * Handles The Start Quiz Button pressed
      * Retrieves the user's name from the text field,
      * validates that it is not empty, and then transitions to the quiz setup screen.
