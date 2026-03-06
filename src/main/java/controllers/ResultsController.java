@@ -19,7 +19,6 @@ import javafx.stage.Stage;
 import model.LeaderboardEntry;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Objects;
@@ -81,7 +80,6 @@ public class ResultsController {
      */
     private void loadLeaderboardFromFile() {
         leaderboardData.clear();
-        String filepath = "src/main/resources/leaderboard.txt";
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
                 Objects.requireNonNull(getClass().getResourceAsStream("/leaderboard.txt"))
         ))) {
