@@ -81,8 +81,7 @@ public class ResultsController {
     private void loadLeaderboardFromFile() {
         leaderboardData.clear();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                Objects.requireNonNull(getClass().getResourceAsStream("/leaderboard.txt"))
-        ))) {
+                Objects.requireNonNull(getClass().getResourceAsStream("/leaderboard.txt"))))) {
             String line;
             while ((line = reader.readLine()) != null) {
 
