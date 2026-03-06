@@ -1,23 +1,30 @@
 package controllers;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import model.LeadboardEntry;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ResultsController {
     @FXML
-    private TableView leaderboardTable;
+    private TableView<LeadboardEntry> leaderboardTable;
     @FXML
-    private TableColumn rankColumn;
+    private TableColumn<LeadboardEntry, Integer> rankColumn;
     @FXML
-    private TableColumn nameColumn;
+    private TableColumn<LeadboardEntry, String> nameColumn;
     @FXML
-    private TableColumn scoreColumn;
+    private TableColumn<LeadboardEntry, String> scoreColumn;
 
     private int score;
     private int totalQuestions;
@@ -26,6 +33,36 @@ public class ResultsController {
     private Label scoreLabel;
     @FXML
     private Button playAgainButton;
+
+    private final ObservableList<LeadboardEntry> leadboardData = FXCollections.observableArrayList();
+
+    public void initialize() {
+        rankColumn.setCellValueFactory(cellData -> cellData.getValue().rankProperty().asObject());
+        nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+        scoreColumn.setCellValueFactory(cellData -> cellData.getValue().scoreProperty());
+
+        loadLeaderboardFromFile("src/main/resources/leaderboard.txt");
+        leaderboardTable.setItems(leadboardData);
+    }
+
+    private void loadLeaderboardFromFile(String filePath) {
+        leadboardData.clear();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Example line: 1 CJ 10/10
+                String[] parts = line.split(" ", 3);
+                if (parts.length == 3) {
+                    int rank = Integer.parseInt(parts[0]);
+                    String playerName = parts[1];
+                    String playerScore = parts[2];
+                    leadboardData.add(new LeadboardEntry(rank, playerName, playerScore));
+                }
+            }
+        } catch (IOException e) {
+            showAlert("Error loading leaderboard: " + e.getMessage());
+        }
+    }
 
     public void setScore(int score, int totalQuestions) {
         this.score = score;
